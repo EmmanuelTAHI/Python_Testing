@@ -3,14 +3,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GUDLFT Registration</title>
+
 </head>
 <body>
-    <h1>Welcome to the GUDLFT Registration Portal!</h1>
-    Please enter your secretary email to continue:
-    <form action="showSummary" method="post">
-        <label for="email">Email:</label>
-        <input type="email" name="email" id=""/>
-        <button type="submit">Enter</button>
-    </form>
+    <div class="header">
+        <h1>Bienvenue sur le Portail GUDLFT !</h1>
+        <p>Portail de réservation pour les compétitions de clubs</p>
+    </div>
+
+    <div class="login-form">
+        <h2>Connexion Secrétaire</h2>
+        <p>Veuillez entrer votre email secrétaire pour continuer :</p>
+        <form action="showSummary" method="post">
+            <div class="form-group">
+                <label for="email">Email :</label>
+                <input type="email" name="email" id="email" required/>
+            </div>
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+
+    <div class="public-links">
+        <h3>Pages publiques :</h3>
+        <a href="{{ url_for('displayPoints') }}">Voir le tableau des points</a>
+    </div>
 </body>
 </html>

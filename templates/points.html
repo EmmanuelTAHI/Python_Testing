@@ -1,0 +1,47 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Points Board | GUDLFT Registration</title>
+</head>
+<body>
+    <div class="header">
+        <h1>Tableau des Points</h1>
+        <p>Classement des clubs par points disponibles</p>
+    </div>
+
+    <div class="total-clubs">
+        <strong>{{ clubs|length }}</strong> club(s) enregistré(s)
+    </div>
+
+    <div class="points-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom du Club</th>
+                    <th>Email</th>
+                    <th>Points Disponibles</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set sorted_clubs = clubs|sort(attribute='points', reverse=true) %}
+                {% for club in sorted_clubs %}
+                <tr>
+                    <td><strong>{{ club.name }}</strong></td>
+                    <td>{{ club.email }}</td>
+                    <td class="points">{{ club.points }} points</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="back-link">
+        <a href="{{ url_for('index') }}">Retour à l'accueil</a>
+    </div>
+
+    <div class="login-link">
+        <a href="{{ url_for('index') }}">Se connecter</a>
+    </div>
+</body>
+</html>

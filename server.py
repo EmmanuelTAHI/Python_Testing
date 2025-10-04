@@ -85,6 +85,10 @@ def purchasePlaces():
 
 
 # TODO: Add route for points display
+@app.route("/displayPoints")
+def displayPoints():
+    """Route publique pour afficher le tableau des points - accessible sans authentification"""
+    return render_template("points.html", clubs=clubs)
 
 
 @app.route("/logout")
