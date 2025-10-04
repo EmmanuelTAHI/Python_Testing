@@ -9,6 +9,26 @@
             "name": "Fall Classic",
             "date": "2020-10-22 13:30:00",
             "numberOfPlaces": "13"
+        },
+        {
+            "name": "Summer Open",
+            "date": "2025-09-25 09:00:00",
+            "numberOfPlaces": "20"
+        },
+        {
+            "name": "Autumn Cup",
+            "date": "2025-10-10 14:00:00",
+            "numberOfPlaces": "30"
+        },
+        {
+            "name": "Winter Championship",
+            "date": "2025-12-05 11:00:00",
+            "numberOfPlaces": "15"
+        },
+        {
+            "name": "New Year Tournament",
+            "date": "2026-01-15 16:00:00",
+            "numberOfPlaces": "40"
         }
     ]
 }
