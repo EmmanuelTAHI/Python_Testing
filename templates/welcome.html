@@ -111,9 +111,8 @@
                                 </div>
                             </div>
 
-                            {% if datetime.strptime(comp['date'], '%Y-%m-%d %H:%M:%S') < datetime.now() %} <div
-                                class="badge badge-error mt-4 p-4">Passé
-                        </div>
+                        {% if datetime.strptime(comp['date'], '%Y-%m-%d %H:%M:%S') < datetime.now() %}
+                        <div class="badge badge-error mt-4 p-4">Passé</div>
 
                         {% elif club['points']|int == 0 %}
                         <div class="card-actions justify-end mt-4 p-4">
