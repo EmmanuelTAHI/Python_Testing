@@ -1,47 +1,137 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="fr" data-theme="black">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Points Board | GUDLFT Registration</title>
+    <title>Tableau des Points | GUDLFT Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
 </head>
-<body>
-    <div class="header">
-        <h1>Tableau des Points</h1>
-        <p>Classement des clubs par points disponibles</p>
+<body class="min-h-screen bg-base-100">
+    <!-- Navigation Bar -->
+    <div class="navbar bg-base-200 shadow-lg">
+        <div class="navbar-start">
+            <h1 class="text-xl font-bold text-base-content">GUDLFT Tableau des Points</h1>
+        </div>
+        <div class="navbar-end">
+            <a href="{{ url_for('index') }}" class="btn btn-primary btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Retour à l'accueil
+            </a>
+        </div>
     </div>
 
-    <div class="total-clubs">
-        <strong>{{ clubs|length }}</strong> club(s) enregistré(s)
-    </div>
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header Section -->
+        <div class="hero bg-gradient-to-r from-primary to-secondary rounded-lg mb-8">
+            <div class="hero-content text-center py-12">
+                <div class="max-w-md">
+                    <h1 class="text-4xl font-bold text-primary-content mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Tableau des Points
+                    </h1>
+                    <p class="text-xl text-primary-content opacity-90 mb-6">
+                        Classement des clubs par points disponibles
+                    </p>
 
-    <div class="points-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Nom du Club</th>
-                    <th>Email</th>
-                    <th>Points Disponibles</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% set sorted_clubs = clubs|sort(attribute='points', reverse=true) %}
-                {% for club in sorted_clubs %}
-                <tr>
-                    <td><strong>{{ club.name }}</strong></td>
-                    <td>{{ club.email }}</td>
-                    <td class="points">{{ club.points }} points</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                    <!-- Stats -->
+                    <div class="stats shadow-lg bg-base-200">
+                        <div class="stat">
+                            <div class="stat-title text-base-content">Total des clubs</div>
+                            <div class="stat-value text-primary">{{ clubs|length }}</div>
+                            <div class="stat-desc">Clubs enregistrés</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="back-link">
-        <a href="{{ url_for('index') }}">Retour à l'accueil</a>
-    </div>
+        <!-- Points Table -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Classement des Clubs
+                </h2>
 
-    <div class="login-link">
-        <a href="{{ url_for('index') }}">Se connecter</a>
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra w-full">
+                        <thead>
+                            <tr class="bg-base-300">
+                                <th class="text-base-content font-bold">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                    </svg>
+                                    Rang
+                                </th>
+                                <th class="text-base-content font-bold">Nom du Club</th>
+                                <th class="text-base-content font-bold">Email</th>
+                                <th class="text-base-content font-bold text-right">Points Disponibles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set sorted_clubs = clubs|sort(attribute='points', reverse=true) %}
+                            {% for club in sorted_clubs %}
+                            <tr class="hover:bg-base-300 transition-colors">
+                                <td>
+                                    <div class="flex items-center">
+                                        {% if loop.index == 1 %}
+                                        <div class="badge badge-warning badge-lg">🥇</div>
+                                        {% elif loop.index == 2 %}
+                                        <div class="badge badge-info badge-lg">🥈</div>
+                                        {% elif loop.index == 3 %}
+                                        <div class="badge badge-secondary badge-lg">🥉</div>
+                                        {% else %}
+                                        <div class="badge badge-ghost">{{ loop.index }}</div>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex items-center">
+                                        <div class="avatar placeholder">
+                                            <div class="bg-primary text-primary-content rounded-full w-8">
+                                                <span class="text-xs">{{ club.name[0].upper() }}</span>
+                                            </div>
+                                        </div>
+                                        <span class="font-bold text-base-content ml-3">{{ club.name }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-base-content opacity-70">{{ club.email }}</td>
+                                <td class="text-right">
+                                    <div class="badge badge-primary badge-lg">
+                                        {{ club.points }} points
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
+            <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Retour à l'accueil
+            </a>
+            <a href="{{ url_for('index') }}" class="btn btn-outline btn-secondary btn-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                Se connecter
+            </a>
+        </div>
     </div>
 </body>
 </html>

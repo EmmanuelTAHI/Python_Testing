@@ -1,36 +1,116 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="fr" data-theme="black">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summary | GUDLFT Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
 </head>
-<body>
-        <h2>Welcome, {{club['email']}} </h2><a href="{{url_for('logout')}}">Logout</a>
+<body class="min-h-screen bg-base-100">
+    <!-- Navigation Bar -->
+    <div class="navbar bg-base-200 shadow-lg">
+        <div class="navbar-start">
+            <h1 class="text-xl font-bold text-base-content">GUDLFT Dashboard</h1>
+        </div>
+        <div class="navbar-end">
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost">
+                    <div class="avatar placeholder">
+                        <div class="bg-primary text-primary-content rounded-full w-8">
+                            <span class="text-xs">{{ club['email'][0].upper() }}</span>
+                        </div>
+                    </div>
+                    <span class="ml-2">{{ club['email'] }}</span>
+                </div>
+                <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                    <li><a href="{{url_for('logout')}}" class="text-error">Se déconnecter</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-    {% with messages = get_flashed_messages()%}
-    {% if messages %}
-        <ul>
-       {% for message in messages %}
-            <li>{{message}}</li>
-        {% endfor %}
-       </ul>
-    {% endif%}
-    Points available: {{club['points']}}
-    <h3>Competitions:</h3>
-    <ul>
-        {% for comp in competitions%}
-        <li>
-            {{comp['name']}}<br />
-            Date: {{comp['date']}}</br>
-            Number of Places: {{comp['numberOfPlaces']}}
-            {%if comp['numberOfPlaces']|int >0%}
-            <a href="{{ url_for('book',competition=comp['name'],club=club['name']) }}">Book Places</a>
-            {%endif%}
-        </li>
-        <hr />
-        {% endfor %}
-    </ul>
-    {%endwith%}
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Welcome Section -->
+        <div class="hero bg-gradient-to-r from-primary to-secondary rounded-lg mb-8">
+            <div class="hero-content text-center py-12">
+                <div class="max-w-md">
+                    <h2 class="text-3xl font-bold text-primary-content mb-4">
+                        Bienvenue, {{ club['email'] }}
+                    </h2>
+                    <div class="stats shadow-lg bg-base-200">
+                        <div class="stat">
+                            <div class="stat-title text-base-content">Points disponibles</div>
+                            <div class="stat-value text-primary">{{ club['points'] }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages()%}
+        {% if messages %}
+        <div class="alert alert-info mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Competitions Section -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body">
+                <h3 class="card-title text-2xl mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    Compétitions
+                </h3>
+
+                <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {% for comp in competitions %}
+                    <div class="card bg-base-300 shadow-md">
+                        <div class="card-body">
+                            <h4 class="card-title text-lg text-base-content">{{ comp['name'] }}</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span class="text-base-content opacity-70">Date : {{ comp['date'] }}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    <span class="text-base-content opacity-70">Places disponibles : {{ comp['numberOfPlaces'] }}</span>
+                                </div>
+                            </div>
+
+                            {% if comp['numberOfPlaces']|int > 0 %}
+                            <div class="card-actions justify-end mt-4">
+                                <a href="{{ url_for('book',competition=comp['name'],club=club['name']) }}"
+                                   class="btn btn-primary btn-sm">
+                                    Réserver des places
+                                </a>
+                            </div>
+                            {% else %}
+                            <div class="badge badge-error mt-4">Complet</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

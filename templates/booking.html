@@ -1,17 +1,120 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="fr" data-theme="black">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking for {{competition['name']}} || GUDLFT</title>
+    <title>Réservation {{competition['name']}} || GUDLFT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
 </head>
-<body>
-    <h2>{{competition['name']}}</h2>
-    Places available: {{competition['numberOfPlaces']}}
-    <form action="/purchasePlaces" method="post">
-        <input type="hidden" name="club" value="{{club['name']}}">
-        <input type="hidden" name="competition" value="{{competition['name']}}">
-        <label for="places">How many places?</label><input type="number" name="places" id=""/>
-        <button type="submit">Book</button>
-    </form>
+<body class="min-h-screen bg-base-100">
+    <!-- Navigation Bar -->
+    <div class="navbar bg-base-200 shadow-lg">
+        <div class="navbar-start">
+            <a href="{{ url_for('showSummary') }}" class="btn btn-ghost btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Retour
+            </a>
+        </div>
+        <div class="navbar-center">
+            <h1 class="text-xl font-bold text-base-content">GUDLFT Réservation</h1>
+        </div>
+        <div class="navbar-end">
+            <a href="{{ url_for('logout') }}" class="btn btn-error btn-sm">Se déconnecter</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto">
+            <!-- Competition Info Card -->
+            <div class="card bg-base-200 shadow-xl mb-8">
+                <div class="card-body">
+                    <h2 class="card-title text-3xl text-primary mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        {{ competition['name'] }}
+                    </h2>
+
+                    <div class="stats stats-vertical sm:stats-horizontal shadow bg-base-300">
+                        <div class="stat">
+                            <div class="stat-title">Places disponibles</div>
+                            <div class="stat-value text-secondary">{{ competition['numberOfPlaces'] }}</div>
+                            <div class="stat-desc">Places restantes</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-title">Club</div>
+                            <div class="stat-value text-accent">{{ club['name'] }}</div>
+                            <div class="stat-desc">{{ club['email'] }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Form -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title text-2xl mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Réserver des places
+                    </h3>
+
+                    <form action="/purchasePlaces" method="post" class="space-y-6">
+                        <input type="hidden" name="club" value="{{ club['name'] }}">
+                        <input type="hidden" name="competition" value="{{ competition['name'] }}">
+
+                        <div class="form-control">
+                            <label class="label" for="places">
+                                <span class="label-text text-lg font-semibold">Combien de places souhaitez-vous réserver ?</span>
+                            </label>
+                            <input
+                                type="number"
+                                name="places"
+                                id="places"
+                                min="1"
+                                max="{{ competition['numberOfPlaces'] }}"
+                                class="input input-bordered input-primary w-full text-lg"
+                                placeholder="Nombre de places"
+                                required
+                            />
+                            <label class="label">
+                                <span class="label-text-alt text-base-content opacity-70">
+                                    Maximum {{ competition['numberOfPlaces'] }} places disponibles
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="card-actions justify-end">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Confirmer la réservation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Information Alert -->
+            <div class="alert alert-info mt-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                    <h3 class="font-bold">Information importante</h3>
+                    <div class="text-xs">
+                        Assurez-vous d'avoir suffisamment de points pour effectuer cette réservation.
+                        Chaque place coûte des points selon les règles de votre club.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
