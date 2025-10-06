@@ -5,3 +5,6 @@ lib
 tests/
 .envrc
 __pycache__
+
+# Fichiers de données temporaires
+bookings.json
