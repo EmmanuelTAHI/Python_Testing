@@ -33,7 +33,10 @@ def showSummary():
     club = next((club for club in clubs if club["email"] == email), None)
 
     if not club:
-        flash("Erreur : adresse email non valide ou club introuvable.")
+        flash(
+            "Adresse email non valide ou club introuvable. Veuillez vérifier votre email.",
+            "error",
+        )
         return render_template("index.html")
 
     return render_template(
@@ -43,11 +46,10 @@ def showSummary():
 
 @app.route("/welcome/<club_name>")
 def welcome(club_name):
-    """Route GET pour afficher la page welcome d'un club spécifique"""
     club = next((club for club in clubs if club["name"] == club_name), None)
 
     if not club:
-        flash("Erreur : club introuvable.")
+        flash("Club introuvable. Veuillez vous reconnecter.", "error")
         return redirect(url_for("index"))
 
     return render_template(
@@ -61,14 +63,15 @@ def book(competition, club):
     foundCompetition = [c for c in competitions if c["name"] == competition][0]
 
     if not foundClub or not foundCompetition:
-        flash("Something went wrong-please try again")
+        flash("Une erreur est survenue. Veuillez réessayer.", "error")
         return render_template("welcome.html", club=club, competitions=competitions)
 
     # verification de la date et de la comptétition
     competition_date = datetime.strptime(foundCompetition["date"], "%Y-%m-%d %H:%M:%S")
     if competition_date < datetime.now():
         flash(
-            "Erreur : vous ne pouvez pas réserver pour une compétition passée ou en cours."
+            "Impossible de réserver : cette compétition est déjà passée ou en cours.",
+            "warning",
         )
         return render_template(
             "welcome.html", club=foundClub, competitions=competitions, datetime=datetime
@@ -86,7 +89,7 @@ def purchasePlaces():
     placesRequired = int(request.form["places"])
 
     if not competition or not club:
-        flash("Erreur: compétition ou club introuvable.")
+        flash("Compétition ou club introuvable. Veuillez réessayer.", "error")
         return redirect(url_for("index"))
 
     available_places = int(competition["numberOfPlaces"])
@@ -94,16 +97,25 @@ def purchasePlaces():
 
     # Vérifications logiques :
     if placesRequired > available_places:
-        flash("Erreur : pas assez de places disponibles.")
+        flash(
+            f"Pas assez de places disponibles. Il ne reste que {available_places} places.",
+            "warning",
+        )
     elif placesRequired > 12:
-        flash("Erreur : vous ne pouvez pas réserver plus de 12 places.")
+        flash("Vous ne pouvez pas réserver plus de 12 places à la fois.", "warning")
     elif placesRequired > club_points:
-        flash("Erreur : pas assez de points dans votre compte.")
+        flash(
+            f"Pas assez de points dans votre compte. Vous avez {club_points} points disponibles.",
+            "warning",
+        )
     else:
         # Mise à jour des places et des points
         competition["numberOfPlaces"] = available_places - placesRequired
         club["points"] = club_points - placesRequired
-        flash(f"Réservation réussie ! {placesRequired} places réservées.")
+        flash(
+            f"Réservation réussie ! {placesRequired} places réservées pour {competition['name']}.",
+            "success",
+        )
 
     return render_template(
         "welcome.html", club=club, competitions=competitions, datetime=datetime

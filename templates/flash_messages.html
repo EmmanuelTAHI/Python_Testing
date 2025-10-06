@@ -1,0 +1,130 @@
+<!-- Template pour les messages flash avec disparition automatique -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div id="flash-messages-container" class="fixed top-4 right-4 z-50 space-y-2">
+    {% for category, message in messages %}
+    <div class="flash-message alert alert-{{ 'error' if category == 'error' else 'success' if category == 'success' else 'warning' if category == 'warning' else 'info' }} shadow-lg max-w-md animate-slide-in" data-duration="5000">
+        <div class="flex items-center">
+            <!-- Icône selon le type de message -->
+            {% if category == 'error' %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 w-6 h-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {% elif category == 'success' %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 w-6 h-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {% elif category == 'warning' %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 w-6 h-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+            {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 w-6 h-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {% endif %}
+
+            <div class="flex-1">
+                <div class="font-bold">{{ message }}</div>
+            </div>
+
+            <!-- Bouton de fermeture -->
+            <button class="btn btn-sm btn-circle btn-ghost" onclick="closeFlashMessage(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Barre de progression -->
+        <div class="progress-bar bg-base-content opacity-20 h-1 rounded-full mt-2">
+            <div class="progress-fill bg-base-content h-full rounded-full transition-all duration-100 ease-linear"></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-out {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+}
+
+.animate-slide-out {
+    animation: slide-out 0.3s ease-in;
+}
+
+.progress-fill {
+    width: 100%;
+    animation: progress-bar 5s linear forwards;
+}
+
+@keyframes progress-bar {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+</style>
+
+<script>
+function closeFlashMessage(button) {
+    const message = button.closest('.flash-message');
+    message.classList.add('animate-slide-out');
+    setTimeout(() => {
+        message.remove();
+        // Supprimer le conteneur s'il n'y a plus de messages
+        const container = document.getElementById('flash-messages-container');
+        if (container && container.children.length === 0) {
+            container.remove();
+        }
+    }, 300);
+}
+
+// Fermeture automatique après 5 secondes
+document.addEventListener('DOMContentLoaded', function() {
+    const messages = document.querySelectorAll('.flash-message');
+    messages.forEach(message => {
+        const duration = parseInt(message.dataset.duration) || 5000;
+
+        setTimeout(() => {
+            if (message.parentNode) {
+                message.classList.add('animate-slide-out');
+                setTimeout(() => {
+                    message.remove();
+                    // Supprimer le conteneur s'il n'y a plus de messages
+                    const container = document.getElementById('flash-messages-container');
+                    if (container && container.children.length === 0) {
+                        container.remove();
+                    }
+                }, 300);
+            }
+        }, duration);
+    });
+});
+</script>
+{% endif %}
+{% endwith %}
