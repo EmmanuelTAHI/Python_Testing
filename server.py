@@ -29,7 +29,27 @@ def index():
 
 @app.route("/showSummary", methods=["POST"])
 def showSummary():
-    club = [club for club in clubs if club["email"] == request.form["email"]][0]
+    email = request.form["email"]
+    club = next((club for club in clubs if club["email"] == email), None)
+
+    if not club:
+        flash("Erreur : adresse email non valide ou club introuvable.")
+        return render_template("index.html")
+
+    return render_template(
+        "welcome.html", club=club, competitions=competitions, datetime=datetime
+    )
+
+
+@app.route("/welcome/<club_name>")
+def welcome(club_name):
+    """Route GET pour afficher la page welcome d'un club spécifique"""
+    club = next((club for club in clubs if club["name"] == club_name), None)
+
+    if not club:
+        flash("Erreur : club introuvable.")
+        return redirect(url_for("index"))
+
     return render_template(
         "welcome.html", club=club, competitions=competitions, datetime=datetime
     )
