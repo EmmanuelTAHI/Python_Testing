@@ -54,7 +54,12 @@
                         <div class="stat">
                             <div class="stat-title">Club</div>
                             <div class="stat-value text-accent">{{ club['name'] }}</div>
-                            <div class="stat-desc">{{ club['email'] }}</div>
+                            <div class="stat-desc">{{ club['email'] }} | Points : {{club['points'] }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-title">Déjà réservé</div>
+                            <div class="stat-value text-warning">{{ existing_bookings }}/12</div>
+                            <div class="stat-desc">Places par ce club</div>
                         </div>
                     </div>
                 </div>

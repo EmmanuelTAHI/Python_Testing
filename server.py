@@ -15,8 +15,38 @@ def loadCompetitions():
         return listOfCompetitions
 
 
+def loadBookings():
+    try:
+        with open("bookings.json") as bookings:
+            listOfBookings = json.load(bookings)["bookings"]
+            return listOfBookings
+    except FileNotFoundError:
+        return []
+
+
+def saveBookings(bookings):
+    with open("bookings.json", "w") as bookings_file:
+        json.dump({"bookings": bookings}, bookings_file, indent=4)
+
+
+def getClubBookingsForCompetition(club_name, competition_name):
+    """Retourne le nombre total de places réservées par un club pour une compétition"""
+    bookings = loadBookings()
+    total_places = 0
+    for booking in bookings:
+        if booking["club"] == club_name and booking["competition"] == competition_name:
+            total_places += booking["places"]
+    return total_places
+
+
 app = Flask(__name__)
 app.secret_key = "something_special"
+
+# Vider les réservations à chaque redémarrage du serveur
+import os
+
+if os.path.exists("bookings.json"):
+    os.remove("bookings.json")
 
 competitions = loadCompetitions()
 clubs = loadClubs()
@@ -77,7 +107,17 @@ def book(competition, club):
             "welcome.html", club=foundClub, competitions=competitions, datetime=datetime
         )
 
-    return render_template("booking.html", club=foundClub, competition=foundCompetition)
+    # Récupérer les réservations existantes du club pour cette compétition
+    existing_bookings = getClubBookingsForCompetition(
+        foundClub["name"], foundCompetition["name"]
+    )
+
+    return render_template(
+        "booking.html",
+        club=foundClub,
+        competition=foundCompetition,
+        existing_bookings=existing_bookings,
+    )
 
 
 @app.route("/purchasePlaces", methods=["POST"])
@@ -95,14 +135,30 @@ def purchasePlaces():
     available_places = int(competition["numberOfPlaces"])
     club_points = int(club["points"])
 
+    # Vérifier les réservations existantes du club pour cette compétition
+    existing_bookings = getClubBookingsForCompetition(club["name"], competition["name"])
+    total_club_bookings = existing_bookings + placesRequired
+
     # Vérifications logiques :
     if placesRequired > available_places:
         flash(
-            f"Pas assez de places disponibles. Il ne reste que {available_places} places.",
+            f"Pas assez de places disponibles. Il ne reste que {available_places} place(s).",
             "warning",
         )
     elif placesRequired > 12:
         flash("Vous ne pouvez pas réserver plus de 12 places à la fois.", "warning")
+    elif total_club_bookings > 12:
+        remaining_allowed = 12 - existing_bookings
+        if remaining_allowed <= 0:
+            flash(
+                f"Limite atteinte ! Vous avez déjà réservé {existing_bookings} places pour cette compétition. Maximum autorisé : 12 places par club.",
+                "warning",
+            )
+        else:
+            flash(
+                f"Limite de réservation dépassée ! Vous avez déjà {existing_bookings} places. Vous ne pouvez réserver que {remaining_allowed} places supplémentaires (maximum 12 par club).",
+                "warning",
+            )
     elif placesRequired > club_points:
         flash(
             f"Pas assez de points dans votre compte. Vous avez {club_points} points disponibles.",
@@ -112,6 +168,18 @@ def purchasePlaces():
         # Mise à jour des places et des points
         competition["numberOfPlaces"] = available_places - placesRequired
         club["points"] = club_points - placesRequired
+
+        # Enregistrer la réservation
+        bookings = loadBookings()
+        new_booking = {
+            "club": club["name"],
+            "competition": competition["name"],
+            "places": placesRequired,
+            "timestamp": datetime.now().isoformat(),
+        }
+        bookings.append(new_booking)
+        saveBookings(bookings)
+
         flash(
             f"Réservation réussie ! {placesRequired} places réservées pour {competition['name']}.",
             "success",
@@ -126,7 +194,14 @@ def purchasePlaces():
 @app.route("/displayPoints")
 def displayPoints():
     """Route publique pour afficher le tableau des points - accessible sans authentification"""
-    return render_template("points.html", clubs=clubs)
+    # Convertir les points en entiers pour le tri correct
+    clubs_with_int_points = []
+    for club in clubs:
+        club_copy = club.copy()
+        club_copy["points"] = int(club["points"])
+        clubs_with_int_points.append(club_copy)
+
+    return render_template("points.html", clubs=clubs_with_int_points)
 
 
 @app.route("/logout")
